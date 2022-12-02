@@ -1,0 +1,246 @@
+---
+title: "UE20CS312 - Data Analytics - Worksheet 1a - Part 1 - Exploring data with R"
+subtitle: "PES University"
+author:
+Rahul Ramesh, Dept of CSE - PES1UG20CS319
+output: html_document
+date: "2022-08-24"
+urlcolor: blue
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Setting Directory
+
+```{r}
+library(pacman)
+print(getwd())
+library(stringr)
+library(tidyverse)
+
+#setwd("/Users/rahulramesh/Home/Desktop/Sem5/Data_Analytics/W1")
+```
+
+## Loading the Dataset
+
+```{r}
+idf <- read.csv('top_1000_instagrammers.csv', header=TRUE)
+
+```
+
+```{r}
+idf
+str(idf)
+
+```
+
+------------------------------------------------------------------------
+
+##Solutions
+
+# Problem 1
+
+### Problem:
+
+Get the summary statistics (mean, median, mode, min, max, 1st quartile, 3rd quartile and standard deviation) for the dataset. Calculate these only for the numerical columns [Audience Country, Authentic Engagement and Engagement Average]. What can you determine from the summary statistics? How does your Instagram stats hold up with the top 1000 :P ?
+
+### Solution:
+
+```{r}
+idf$Followers<- as.numeric(str_replace(idf$Followers, "M", "e6"))
+idf$Authentic.Engagement<-as.numeric(str_replace_all(idf$Authentic.Engagement, c("M" = "e6", "K" = "e3")) )
+idf$Engagement.Avg. <- as.numeric(str_replace_all(idf$Engagement.Avg., c("M" = "e6", "K" = "e3")))
+
+idf
+
+```
+
+First, I will be displaying the metadata of this Data-set:
+
+```{r}
+cat("Category:\n")
+summary(data$Category)
+
+cat("\nAudience Country\n")
+summary(data$Audience.Country)
+
+cat("\nAuthentic Engagement\n")
+summary(data$Authentic.Engagement)
+
+cat("\nFollowers\n")
+summary(data$Followers)
+
+cat("\nEngagement Average\n")
+summary(data$Authentic.Engagement)
+
+```
+
+### Mean of Data:
+
+```{r}
+ath.eng <- idf$'Authentic.Eng'
+fol <- idf$'Followers'
+eng.avg <- idf$'Engagement.Avg.'
+
+sprintf("%f is the mean of followers", mean(fol))
+sprintf("%f is the mean of authentic engagement", mean(ath.eng))
+sprintf("%f is the mean of enagement average", mean(eng.avg))
+```
+
+### Median of Data:
+
+```{r}
+#Calcualting Meadian of Data
+ath.eng <- idf$'Authentic.Eng'
+fol <- idf$'Followers'
+eng.avg <- idf$'Engagement.Avg.'
+
+sprintf("%f is the median of followers", median(fol))
+sprintf("%f is the median of authentic engagement", median(ath.eng))
+sprintf("%f is the median of enagement average", median(eng.avg))
+```
+
+### Mode of Data:
+
+```{r}
+#Note that there is no predefined mode() operation in R programming language, hence I will be defining the mode() function.
+mode_of_data <- function(x) {
+  unique_value <- unique(x) 
+  unique_value[which.max(tabulate(match(x, unique_value)))]
+}
+
+#Now I will be displaying the Mode for all columns in the dataset such as Followers, Audience Country, Authentic Engagement and Engagement Average .
+
+cat("\n\nMode of:",
+    "\nFollowers\t\t",mode_of_data(data$Followers),
+    "\nAudience Country\t",mode_of_data(data$Audience.Country),
+    "\nEngagement Average\t",mode_of_data(data$Engagement.Avg.),
+    "\nCategory\t\t",mode_of_data(data$Category),
+    "\n\n")
+
+```
+
+![Problem 1 - Mode calculation output image](images/Screenshot%202022-08-28%20at%2023.41.26.png)
+
+From the above mode of the data, I can determine that the category "Music" is the most trending industry and the majority of the followers of this industry are located in the United States.
+
+### Summary Statistics:
+
+```{r}
+
+cat("\n\nFollowers:\n",
+    "Standard Deviation",sd(fol, na.rm=TRUE),"\n")
+summary(fol)
+
+cat("\n\nEngagement Average:\n",
+    "Standard Deviation",sd(eng.avg, na.rm=TRUE),"\n")
+summary(data$Engagement.Avg.)
+
+ cat("\n\nAuthentic Engagement:\n",
+    "Standard Deviation",sd(ath.eng, na.rm=TRUE),"\n")
+ summary(ath.eng)
+```
+
+![Problem 1 - Summary Statistics Output Image](images/Screenshot%202022-08-28%20at%2023.41.26-01.png)
+
+### Conclusion:
+
+From the above Analysis done on the given data, I can conclude with the following:
+
+1)  The United States of America has the biggest audience on Instagram. With such immense level of technological innovations, and with the United States of America being at the forefront of any technological revolution, it is no surprise that even for the social media revolution, the USA has taken the lead.
+
+2)  The music industry has the largest chunk of following on Instagram. With talented marketing strategists, music artists have truly understood how to capture the attention of their followers by making use of the innovative features on Instagram.
+
+With somewhere around 700 followers on Instagram, which is around 0.002687% of the mean of the following of top celebrities , I'm still quite far off from being famous :P .
+
+------------------------------------------------------------------------
+
+# Problem 2
+
+In the bar graph plotted in the question, the 3 countries that have the highest audience on Instagram are in the following order:
+
+-   United States of America
+
+-   India
+
+-   Brazil
+
+    ```{r}
+    cat("\n\nThe total percentage of influencers with the top country as Audience Country are",(data_sorted[n]/1000)*100)
+
+    ```
+
+### Conclusion:
+
+The total percentage of Influencers with the top country as Audience Country are 27.7%
+
+------------------------------------------------------------------------
+
+# Problem 3
+
+### Question:
+
+Create a horizontal box plot using the column Authentic.Engagement. What inferences can you make from this box and whisker plot?
+
+### Solution:
+
+```{r}
+#The boxplot is as follows: 
+boxplot((ath.eng), horizontal=TRUE)
+```
+
+![Problem 3 - Box plot output image](images/Screenshot%202022-08-28%20at%2023.43.00.png)
+
+### Analysis:
+
+From the above Box plot, I can conclude that:
+
+-   There are a *large number of outliers*. From the above positively skewed data, and large quantity of outliers, it is evident that even in the top 1000 followed celebrities, there is a significant amount of difference between the dominant celebrities and the rest of the top 1000 celebrities.
+
+------------------------------------------------------------------------
+
+# Problem 4
+
+### Question:
+
+Create a histogram where the x-axis contains the Audience Country and y-axis contains the total follower count for accounts with that Audience Country. Which country is associated with the most amount of followers? Hint: Recall the concept of groupby() in Pandas. Try using the aggregate() function in R to achieve the same goal. What is the total for India and what rank does it fall compared to other countries?
+
+### Solution:
+
+```{r}
+#install.packages("ggplot2")
+#importing the library to plot histogram later:
+library(ggplot2)
+
+#Using aggregate() function
+agr_data<- aggregate(fol, list(data$Audience.Country), FUN=sum)
+colnames(agr_data)[1] <- "Country"
+colnames(agr_data)[2] <- "Followers"
+agr_data
+
+
+```
+
+```{r}
+#Plotting data in histogram after tabulating it: 
+ggplot(agr_data, aes(x=Country, y=Followers)) + geom_bar(stat='identity') + geom_col()+ coord_flip()
+```
+
+![Problem 4- Histogram Output Image](images/Screenshot%202022-08-28%20at%2023.43.50.png)
+
+### Analysis:
+
+From the above table , it is evident that India, has a total of *5684300000, or 5.684 billion* and stands in second place after the United States of America.
+
+------------------------------------------------------------------------
+
+# Conclusion:
+
+My Instagram account has roughly 700 followers. Whilst I haven't posted anything on my feed in a long time, I have been regular in posting stories. My account has about 0.0027% of the mean of followers of the top 1000 accounts on Instagram.
+
+If I were to start my journey as an Influencer, I would find an industry with the most authentic engagement in my current area of residence i.e; Bangalore and then expand from the city as my audience to the country and eventually the entire world. From the analysis above, it's evident that the music industry is in demand (as always) and I would most likely get started with posting covers of songs.
